@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Nombres Oscuro</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --text-color: #f0f0f0;
+            --primary-color: #bb86fc;
+            --secondary-color: #3700b3;
+            --accent-color: #03dac6;
+            --surface-color: #1e1e1e;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: var(--surface-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            padding: 2rem;
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+
+        .description {
+            color: var(--text-color);
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        .name-display {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--accent-color);
+            border-radius: 6px;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .name-display:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .name-display.copied {
+            border-color: var(--primary-color);
+            background-color: rgba(187, 134, 252, 0.1);
+            box-shadow: 0 3px 6px rgba(187, 134, 252, 0.3);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 6px;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0.75rem 1.5rem;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .notification {
+            color: var(--accent-color);
+            margin-top: 0.75rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .notification.show {
+            opacity: 1;
+        }
+
+        #nameDisplayContainer {
+            /* Initially hidden */
+            display: none;
+        }
+
+        #nameDisplayContainer.show {
+            /* Shown when a name is generated */
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Generador de Nombres</h1>
+        <p class="description">Haz clic en el botón para generar un nombre aleatorio. El nombre se copiará automáticamente al portapapeles.</p>
+        <div id="nameDisplayContainer">
+            <div class="name-display" id="nameDisplay"></div>
+        </div>
+        <button id="generateButton">Generar Nombre</button>
+        <div class="notification" id="notification">¡Nombre copiado al portapapeles!</div>
+    </div>
+
+    <script>
+        const nameDatabase = {
+            us: {
+
+    male: [
+        'James', 'John', 'Robert', 'Michael', 'William', 'David', 'Richard', 'Joseph',
+        'Thomas', 'Charles', 'Christopher', 'Daniel', 'Matthew', 'Anthony', 'Donald',
+        'Mark', 'Paul', 'Steven', 'Andrew', 'Kenneth', 'Joshua', 'Kevin', 'Brian',
+        'George', 'Edward', 'Ronald', 'Timothy', 'Jason', 'Jeffrey', 'Ryan', 'Jacob',
+        'Gary', 'Nicholas', 'Eric', 'Jonathan', 'Stephen', 'Larry', 'Justin', 'Scott',
+        'Brandon', 'Benjamin', 'Samuel', 'Frank', 'Gregory', 'Raymond', 'Alexander',
+        'Patrick', 'Jack', 'Dennis', 'Jerry', 'Tyler', 'Aaron', 'Jose', 'Adam',
+        'Henry', 'Walter', 'Peter', 'Sean', 'Kyle', 'Harold', 'Ethan', 'Carl',
+        'Keith', 'Tony', 'Albert', 'Philip', 'Craig', 'Alan', 'Bradley', 'Douglas',
+        'Jimmy', 'Joe', 'Nathan', 'Allen', 'Phillip', 'Brent', 'Earl', 'Shane',
+        'Wayne', 'Travis', 'Stanley', 'Melvin', 'Wesley', 'Glen', 'Curtis', 'Cecil',
+        'Dean', 'Rex', 'Grant', 'Kurt', 'Neil', 'Bruce', 'Norman', 'Clarence',
+        'Dean', 'Dale', 'Dustin', 'Blake', 'Cody', 'Seth', 'Corey', 'Caleb',
+        'Joel', 'Jesse', 'Marcus', 'Trenton', 'Clayton', 'Logan', 'Colin', 'Chase',
+        'Dustin', 'Trevor', 'Lucas', 'Miles', 'Owen', 'Dylan', 'Nathaniel', 'Spencer',
+        'Victor', 'Simon', 'Warren', 'Kent', 'Gilbert', 'Julius', 'Julio', 'Augustus',
+        'Hugo', 'Frederick', 'Cecil', 'Eugene', 'Maurice', 'Clifford', 'Clifton', 'Byron',
+        'Edgar', 'Rodney', 'Garrett', 'Terrance', 'Clifford', 'Cecil', 'Gavin', 'Chad',
+        'Chadwick', 'Donovan', 'Quentin', 'Pierce', 'Quincy', 'Jamal', 'Darius', 'Damon',
+        'Emanuel', 'Desmond', 'Derrick', 'Jarrett', 'Keegan', 'Kieran', 'Braden', 'Brady',
+        'Brock', 'Zackary', 'Zachary', 'Tanner', 'Riley', 'Rylan', 'Rhys', 'Kobe', 'Tate',
+        'Jaxon', 'Jax', 'Kylo', 'Kashton'
+    ],
+    female: [
+        'María', 'Patricia', 'Jennifer', 'Linda', 'Elizabeth', 'Bárbara', 'Susana',
+        'Jessica', 'Sara', 'Karen', 'Nancy', 'Lisa', 'Margarita', 'Betty', 'Sandra',
+        'Ashley', 'Dorotea', 'Kimberly', 'Emily', 'Donna', 'Michelle', 'Carolina',
+        'Amanda', 'Melissa', 'Débora', 'Estefanía', 'Rebeca', 'Laura', 'Sharon',
+        'Cintia', 'Catalina', 'Amy', 'Shirley', 'Ángela', 'Elena', 'Ana', 'Brenda',
+        'Pamela', 'Nicole', 'Samantha', 'Catalina', 'Emma', 'Ruth', 'Cristina',
+        'Catalina', 'Débora', 'Raquel', 'Carolina', 'Janet', 'Virginia', 'María',
+        'Heather', 'Diana', 'Julie', 'Joyce', 'Victoria', 'Kelly', 'Christine',
+        'Stephanie', 'Erin', 'Jacqueline', 'Katherine', 'Andrea', 'Carol', 'Janice',
+        'Judy', 'Alice', 'Teresa', 'Gloria', 'Evelyn', 'Jean', 'Cheryl', 'Sophia',
+        'Rose', 'Kathleen', 'Debra', 'Olivia', 'Anna', 'Kayla', 'Chelsea', 'Julia',
+        'Lauren', 'Amber', 'Megan', 'Crystal', 'Erica', 'Angela', 'Tiffany', 'Michele',
+        'April', 'Robin', 'Brooke', 'Rachel', 'Vanessa', 'Brandi', 'Tracy', 'Mariah',
+        'Jamie', 'Dawn', 'Kristin', 'Erin', 'Taylor', 'Krystal', 'Morgan', 'Amber',
+        'Brittany', 'Alexandra', 'Jordan', 'Sydney', 'Allison', 'Kaylee', 'Madison',
+        'Hannah', 'Haley', 'Abigail', 'Mackenzie', 'Gabrielle', 'Summer', 'Savannah',
+        'Autumn', 'Chloe', 'Aaliyah', 'Nevaeh', 'Serenity', 'Hope', 'Destiny', 'Trinity',
+        'Harmony', 'Faith', 'Lyric', 'Heaven', 'Skylar', 'Scarlett', 'Piper', 'Teagan',
+        'Paisley', 'Rowan', 'Harlow', 'Willow', 'Juniper', 'Aurora', 'Stella', 'Luna',
+        'Harper', 'Hazel', 'Olive', 'Ivy', 'Rosemary', 'Lavender', 'Briar', 'Sage',
+        'Coraline', 'Wilhemina', 'Winifred', 'Guinevere', 'Gwendolyn', 'Persephone',
+        'Evangeline', 'Octavia', 'Anastasia', 'Beatrice', 'Vivienne', 'Cordelia', 'Florence',
+        'Theodora', 'Magnolia', 'Calliope', 'Aurelia', 'Seraphina', 'Ophelia', 'Isadora',
+        'Ariadne'
+    ],
+    surnames: [
+        'Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'García', 'Miller',
+        'Davis', 'Rodríguez', 'Martínez', 'Hernández', 'López', 'González',
+        'Wilson', 'Anderson', 'Thomas', 'Taylor', 'Moore', 'Jackson', 'Martín',
+        'Lee', 'Pérez', 'Thompson', 'White', 'Harris', 'Sánchez', 'Clark',
+        'Ramírez', 'Lewis', 'Robinson', 'Walker', 'Young', 'Allen', 'King',
+        'Wright', 'Scott', 'Torres', 'Nguyen', 'Hill', 'Flores', 'Green',
+        'Adams', 'Nelson', 'Baker', 'Hall', 'Rivera', 'Campbell', 'Mitchell',
+        'Carter', 'Roberts', 'Turner', 'Phillips', 'Parker', 'Evans', 'Collins',
+        'Edwards', 'Stewart', 'Morris', 'Cook', 'Rogers', 'Reed', 'Bell', 'Morgan',
+        'Murphy', 'Bailey', 'Rivera', 'Cooper', 'Richardson', 'Cox', 'Howard',
+        'Ward', 'Peterson', 'Gray', 'James', 'Watson', 'Brooks', 'Kelly', 'Sanders',
+        'Price', 'Bennett', 'Wood', 'Barnes', 'Ross', 'Henderson', 'Coleman',
+        'Jenkins', 'Perry', 'Powell', 'Long', 'Patterson', 'Hughes', 'Washington',
+        'Butler', 'Simmons', 'Foster', 'Gonzales', 'Bryant', 'Alexander', 'Russell',
+        'Griffin', 'Hayes', 'Myers', 'Ford', 'Hamilton', 'Graham', 'Sullivan',
+        'Woods', 'Cole', 'West', 'Jordan', 'Rice', 'Reynolds', 'Fisher', 'Ellis',
+        'Harrison', 'Gibson', 'Mcdonald', 'Cruz', 'Marshall', 'Ortiz', 'Gomez',
+        'Murray', 'Freeman', 'Wells', 'Webb', 'Simpson', 'Stevens', 'Tucker',
+        'Porter', 'Hunter', 'Hicks', 'Crawford', 'Henry', 'Boyd', 'Mason',
+        'Morales', 'Kennedy', 'Warren', 'Dixon', 'Burns', 'Gordon', 'Shaw',
+        'Holt', 'Fleming', 'Reynolds', 'Becker', 'Osborne', 'Hahn', 'Barnett',
+        'Atkinson', 'Bradshaw', 'Brewer', 'Bowman', 'Brock', 'Byrd', 'Calhoun',
+        'Carson', 'Castillo', 'Chambers', 'Chaney', 'Chapman', 'Chase', 'Chen',
+        'Christensen', 'Church', 'Clayton', 'Clements', 'Cline', 'Combs',
+        'Conley', 'Conner', 'Conrad', 'Contreras', 'Craft', 'Craig', 'Crane',
+        'Crosby', 'Cross', 'Cummings', 'Curtis', 'Dale', 'Daniel', 'Daniels',
+        'Daugherty', 'Davidson', 'Dawson', 'Day', 'Dean', 'Decker', 'Delacruz',
+        'Dennis', 'Diaz', 'Dickerson', 'Dillon', 'Dodd', 'Dominguez', 'Donaldson',
+        'Doyle', 'Drake', 'Dudley', 'Duffy', 'Duncan', 'Dunlap', 'Dunn',
+        'Duran', 'Durham', 'Eaton', 'Eberhardt', 'Eckert', 'Edgar', 'Edmonds',
+        'Elliott', 'Emerson', 'England', 'Enriquez', 'Erickson', 'Espinoza',
+        'Estes', 'Estrella', 'Etheridge', 'Eubanks', 'Ewing', 'Faulk', 'Faulkner',
+        'Fay', 'Felix', 'Ferguson', 'Fernandez', 'Fields', 'Finch', 'Fitzgerald',
+        'Fitzpatrick', 'Flanagan', 'Fletcher', 'Flynn', 'Forbes', 'Foreman',
+        'Forrest', 'Fortner', 'Fowler', 'Fox', 'Francis', 'Franklin', 'Frazier',
+        'Frederick', 'French', 'Frye', 'Fuchs', 'Fuentes', 'Fuller', 'Fulton',
+        'Funk', 'Gaither', 'Gallegos', 'Galligan', 'Galloway', 'Galvan', 'Gambino',
+        'Gamble', 'Gann', 'Gardner', 'Garner', 'Garrett', 'Garrison', 'Gates',
+        'Gay', 'Geiger', 'George', 'Gerber', 'Getty', 'Gibbs', 'Gilbert',
+        'Gilchrist', 'Giles', 'Gill', 'Gillespie', 'Gilliam', 'Gilmore',
+        'Gipson', 'Given', 'Givens', 'Glass', 'Glenn', 'Glover', 'Godfrey',
+        'Goff', 'Golden', 'Goldman', 'Good', 'Goodman', 'Goodrich', 'Goodwin',
+        'Gorden', 'Gosnell', 'Gould', 'Gowdy', 'Grace', 'Grady', 'Grant',
+        'Graves', 'Gray', 'Green', 'Greene', 'Greer', 'Gregory', 'Grice',
+        'Grider', 'Griffin', 'Griffith', 'Griggs', 'Grimes', 'Grooms', 'Gross',
+        'Grove', 'Guerin', 'Guess', 'Guest', 'Guidry', 'Guillaume', 'Guillory',
+        'Gunn', 'Guthrie', 'Gutierrez', 'Guy', 'Haas', 'Hackett', 'Hadden',
+        'Hadley', 'Hagaman', 'Hager', 'Haggard', 'Hahn', 'Haight', 'Hail',
+        'Hale', 'Haley', 'Hall', 'Hallam', 'Halliday', 'Halloran', 'Halpin',
+        'Halsey', 'Halverson', 'Ham', 'Hamblen', 'Hamel', 'Hamilton', 'Hamlin',
+        'Hamm', 'Hammel', 'Hammer', 'Hampton', 'Hancock', 'Hand', 'Handy',
+        'Haney', 'Hanke', 'Hanks', 'Hanley', 'Hanna', 'Hannah', 'Hansen',
+        'Hanson', 'Hardaway', 'Harden', 'Harder', 'Hardesty', 'Harding',
+        'Hardison', 'Hardman', 'Hardwick', 'Hardy', 'Hare', 'Hargis',
+        'Hargrave', 'Harker', 'Harkins', 'Harlow', 'Harmon', 'Harms', 'Harper',
+        'Harrell', 'Harrington', 'Harris', 'Harrison', 'Hart', 'Hartley',
+        'Hartman', 'Hartmann', 'Harvey', 'Harwell', 'Haslett', 'Hatch',
+        'Hatfield', 'Hathaway', 'Hatton', 'Haught', 'Hauser', 'Hawes',
+        'Hawkins', 'Hawley', 'Hay', 'Hayden', 'Hayes', 'Hayman', 'Haynes',
+        'Hays', 'Hayward', 'Hazel', 'Hazelton', 'Hazen', 'Head', 'Headley',
+        'Healey', 'Healy', 'Hearn', 'Hearne', 'Heath', 'Heaton', 'Hebert',
+        'Heck', 'Heckman', 'Hedden', 'Hedges', 'Hedrick', 'Heffernan',
+        'Heffner', 'Heflin', 'Hegarty', 'Heilman', 'Heim', 'Hein',
+        'Heine', 'Heiner', 'Heininger', 'Heinrich', 'Heintz', 'Heinz',
+        'Heitman', 'Helberg', 'Held', 'Helgerson', 'Heller', 'Hellman',
+        'Helm', 'Helmer', 'Helmick', 'Helms', 'Helt', 'Heltzel', 'Hembree',
+        'Hemenway', 'Hemingway', 'Hemmer', 'Hemmings', 'Hemp', 'Hemphill',
+        'Henagan', 'Henck', 'Henckel', 'Hendershot', 'Henderson', 'Hendricks',
+        'Hendrickson', 'Heneghan', 'Henke', 'Henkel', 'Henley', 'Henneberry',
+        'Hennessy', 'Henning', 'Hennings', 'Henrich', 'Henrichs', 'Henricks',
+        'Henriksen', 'Henry', 'Hensel', 'Henshaw', 'Henson', 'Hentschel',
+        'Henzel', 'Heppner', 'Herald', 'Herber', 'Herbert', 'Herbst',
+        'Herda', 'Herdman', 'Herdt', 'Hering', 'Herley', 'Herman',
+        'Hermann', 'Hermanson', 'Hermes', 'Herms', 'Hern', 'Herndon',
+        'Herner', 'Herold', 'Heron', 'Heroy', 'Herrell', 'Herrick',
+        'Herring', 'Herrington', 'Herrin', 'Herritt', 'Herrman', 'Herrmann',
+        'Herron', 'Hersch', 'Herschberger', 'Herscher', 'Hertel', 'Hertlein',
+        'Hertz', 'Hertzberg', 'Hertzler', 'Herzberg', 'Herzog', 'Heselton',
+        'Heskett', 'Hess', 'Hesseltine', 'Hesser', 'Hession', 'Hester',
+        'Hetherington', 'Hetrick', 'Hett', 'Hetterich', 'Hettler', 'Hettman',
+        'Heuer', 'Heustis', 'Heussner', 'Hewes', 'Hewett', 'Hewig',
+        'Hewitt', 'Hewlett', 'Hey', 'Heyboer', 'Heyd', 'Heyer',
+        'Heyl', 'Heyman', 'Heymann', 'Heyward', 'Hiatt', 'Hibbard',
+        'Hibbert', 'Hibbs', 'Hickam', 'Hickerson', 'Hickey', 'Hickman',
+        'Hickok', 'Hicks', 'Hickson', 'Hicksville', 'Hidalgo', 'Hiebert',
+        'Higgins', 'Higginbotham', 'Higgs', 'High', 'Highfill', 'Highland',
+        'Hight', 'Hightower', 'Hilbert', 'Hilberth', 'Hildebrand',
+        'Hildenbrand', 'Hilderbrand', 'Hildreth', 'Hilgedick', 'Hilke',
+        'Hill', 'Hillard', 'Hillebrand', 'Hillebrecht', 'Hillenbrand',
+        'Hillerman', 'Hillgartner', 'Hilliard', 'Hilliker', 'Hillman',
+        'Hillmann', 'Hills', 'Hilmer', 'Hilpert', 'Hilscher', 'Hilton',
+        'Himelick', 'Himes', 'Himmel', 'Himmelberger', 'Himmelreich',
+        'Hinckley', 'Hinderer', 'Hinderliter', 'Hinds', 'Hine', 'Hines',
+        'Hinkel', 'Hinkle', 'Hinkley', 'Hinman', 'Hinner', 'Hinnrichs',
+        'Hinrichsen', 'Hinton', 'Hintz', 'Hinz', 'Hipple', 'Hippner',
+        'Hiraki', 'Hires', 'Hirn', 'Hirokawa', 'Hirota', 'Hirsch',
+        'Hirschberg', 'Hirschfeld', 'Hirschman', 'Hirschmann', 'Hirsekorn',
+        'Hirt', 'Hirth', 'Hirzel', 'Hisaka', 'Hisamatsu', 'Hisano',
+        'Hisatomi', 'Hisayasu', 'Hise', 'Hiseki', 'Hishida', 'Hiskes',
+        'Hisle', 'Hiss', 'Hissom', 'Hissong', 'Hitch', 'Hitchcock',
+        'Hitchings', 'Hitchens', 'Hite', 'Hites', 'Hitt', 'Hittell',
+        'Hittner', 'Hitz', 'Hitzeman', 'Hix', 'Hixson', 'Hiyama',
+        'Hixson', 'Hiyama', 'Hiyoshi', 'Hjalmquist', 'Hjelle', 'Hlasta',
+        'Hlavacek', 'Hlawatsch', 'Hoadley', 'Hoag', 'Hoaglin', 'Hoare',
+        'Hoback', 'Hobbick', 'Hobbie', 'Hobbis', 'Hobbs', 'Hobday',
+        'Hobert', 'Hobgood', 'Hobin', 'Hobkirk', 'Hobman', 'Hobohm',
+        'Hobron', 'Hobsbaum', 'Hobson', 'Hoch', 'Hochbaum', 'Hochberg',
+        'Hochgesang', 'Hochhaus', 'Hochheiser', 'Hochkeppel', 'Hochman',
+        'Hochmuth', 'Hochrein', 'Hochstadt', 'Hochstetler', 'Hochstetter',
+        'Hochstrasser', 'Hochwalt', 'Hocker', 'Hockert', 'Hockett',
+        'Hocking', 'Hockley', 'Hodde', 'Hoddinott', 'Hodgdon', 'Hodge',
+        'Hodges', 'Hodgkins', 'Hodgkinson', 'Hodgson', 'Hodnette',
+        'Hodnick', 'Hodnik', 'Hodson', 'Hoe', 'Hoecker', 'Hoefel',
+        'Hoeffel', 'Hoeffer', 'Hoeffken', 'Hoefler', 'Hoeflich', 'Hoefling',
+        'Hoefman', 'Hoeg', 'Hoegner', 'Hoehn', 'Hoeing', 'Hoel',
+        'Hoelbl', 'Hoelck', 'Hoelker', 'Hoelzer', 'Hoeman', 'Hoemke',
+        'Hoen', 'Hoenig', 'Hoenninger', 'Hoeppner', 'Hoerauf', 'Hoerch',
+        'Hoerdemann', 'Hoermann', 'Hoerner', 'Hoerning', 'Hoerr',
+        'Hoerrmann', 'Hoertel', 'Hoertner', 'Hoerz', 'Hoesel', 'Hoeser',
+        'Hoesing', 'Hoess', 'Hoesse', 'Hoessly', 'Hoestra', 'Hoetger',
+        'Hoeting', 'Hoetker', 'Hoettels', 'Hoettges', 'Hoettinger',
+        'Hoetzlein', 'Hof', 'Hofacker', 'Hofbauer', 'Hofe', 'Hofecker',
+        'Hofeldt', 'Hofer', 'Hoferek', 'Hofestad', 'Hofestadt', 'Hofett',
+        'Hofewimmer', 'Hofgard', 'Hofgardner', 'Hofgrefe', 'Hofheinz',
+        'Hofherr', 'Hofholz', 'Hofing', 'Hofland', 'Hofler', 'Hofling',
+        'Hofman', 'Hofmann', 'Hofmeister', 'Hofmeyer', 'Hofmeister',
+        'Hofmeyer', 'Hofner', 'Hofreiter', 'Hofreiter', 'Hofsaess',
+        'Hofschneider', 'Hofsommer', 'Hofstaedter', 'Hofstatter',
+        'Hofstadter', 'Hofstadtler', 'Hofstattler', 'Hofstee',
+        'Hofstede', 'Hofstedt', 'Hofstedter', 'Hofstedter',
+        'Hofsteetter', 'Hofsteetter', 'Hofstratte',
+    ]
+},
+ca: {
+    male: [
+        'Liam', 'Noah', 'Lucas', 'Oliver', 'Benjamín', 'William', 'Elijah',
+        'James', 'Alexander', 'Ethan', 'Michael', 'Daniel', 'Matthew', 'Henry',
+        'Joseph', 'Jackson', 'Samuel', 'Sebastian', 'David', 'Carter', 'Wyatt',
+        'John', 'Owen', 'Dylan', 'Luke', 'Gabriel', 'Anthony', 'Isaac', 'Grayson',
+        'Jack', 'Julian', 'Levi', 'Christopher', 'Joshua', 'Andrew', 'Theodore',
+        'Caleb', 'Ryan', 'Asher', 'Nathan', 'Thomas', 'Leo', 'Isaiah', 'Charles',
+        'Josiah', 'Hudson', 'Christian', 'Hunter', 'Connor', 'Eli', 'Ezra', 'Aaron',
+        'Xavier', 'Dominic', 'Simon', 'Vincent', 'Édouard', 'Félix', 'Théo',
+        'Zachary', 'Olivier', 'Antoine', 'Arthur', 'Victor', 'Louis', 'Émile',
+        'Adam', 'Alexis', 'Samuel', 'Tristan', 'Jérémie', 'Maxime', 'Charles',
+        'Loïc', 'William', 'Évan', 'Elliot', 'Nathaniel', 'Éloi', 'Gaspard',
+        'Roméo', 'Flavien', 'Aurélien', 'Augustin', 'Mathis', 'Quentin',
+        'Alexandre', 'Baptiste', 'Cédric', 'Damien', 'Hugo', 'Laurent',
+        'Pascal', 'Rémi', 'Sébastien', 'Valentin', 'Xavier', 'Zacharie',
+        'Alban', 'Ambroise', 'Aristide', 'Auguste', 'Basile', 'Blaise',
+        'Célestin', 'Clément', 'Constant', 'Denis', 'Edmond', 'Eugène',
+        'Ferdinand', 'Firmin', 'Fulbert', 'Gédéon', 'Gilles', 'Hippolyte',
+        'Hyacinthe', 'Isidore', 'Jérôme', 'Josué', 'Léandre', 'Léon',
+        'Léopold', 'Lucien', 'Martin', 'Maxence', 'Narcisse', 'Nestor',
+        'Octave', 'Onésime', 'Parfait', 'Philibert', 'Prosper', 'Quirinus',
+        'Raoul', 'Régis', 'Romain', 'Séverin', 'Sylvain', 'Timothée',
+        'Urbain', 'Valère', 'Vivien', 'Wilfrid', 'Xyste', 'Yvon', 'Zéphirin'
+    ],
+    female: [
+        'Olivia', 'Emma', 'Charlotte', 'Amelia', 'Ava', 'Sophia', 'Isabella',
+        'Mia', 'Evelyn', 'Harper', 'Luna', 'Camila', 'Gianna', 'Elizabeth',
+        'Eleanor', 'Ella', 'Abigail', 'Sofia', 'Avery', 'Scarlett', 'Emily',
+        'Aria', 'Penelope', 'Chloe', 'Layla', 'Mila', 'Nora', 'Hazel', 'Madison',
+        'Ellie', 'Lily', 'Nova', 'Isla', 'Grace', 'Violet', 'Aurora', 'Riley',
+        'Zoey', 'Willow', 'Emilia', 'Stella', 'Zoe', 'Victoria', 'Hannah',
+        'Addison', 'Leah', 'Lucy', 'Eliana', 'Ivy', 'Everly', 'Rose',
+        'Alice', 'Florence', 'Léa', 'Chloé', 'Florence', 'Gabrielle', 'Raphaëlle',
+        'Éléonore', 'Béatrice', 'Sophie', 'Juliette', 'Margot', 'Adèle',
+        'Mathilde', 'Clémence', 'Constance', 'Jeanne', 'Agathe', 'Justine',
+        'Héloïse', 'Joséphine', 'Louise', 'Blanche', 'Camille', 'Valentine',
+        'Aliénor', 'Amélie', 'Audrey', 'Cécile', 'Émilie', 'Fleur',
+        'Hortense', 'Irène', 'Laure', 'Manon', 'Ophélie', 'Prudence',
+        'Rosalie', 'Solange', 'Thérèse', 'Ursule', 'Virginie', 'Yvette',
+        'Zénaïde', 'Agnès', 'Aimée', 'Anaïs', 'Astrid', 'Brigitte',
+        'Coralie', 'Dominique', 'Édith', 'Fabiola', 'Gaétane', 'Ghislaine',
+        'Honorine', 'Inès', 'Josée', 'Lysiane', 'Magali', 'Noémie',
+        'Ondine', 'Pascale', 'Quitterie', 'Reine', 'Sabine', 'Tiphaine',
+        'Ulrique', 'Valérie', 'Wendy', 'Xavière', 'Yolande', 'Zoé'
+    ],
+    surnames: [
+        'Smith', 'Brown', 'Tremblay', 'Martin', 'Roy', 'Gagnon', 'Lee',
+        'Wilson', 'Johnson', 'MacDonald', 'Taylor', 'Campbell', 'Anderson',
+        'Jones', 'Leblanc', 'Clark', 'White', 'Walker', 'Robinson', 'Young',
+        'Wong', 'Thompson', 'Scott', 'Morris', 'Stewart', 'Harris', 'Evans',
+        'Baker', 'Green', 'King', 'Cote', 'Gauthier', 'Bouchard', 'Pelletier',
+        'Murray', 'Murphy', 'Kelly', 'Reid', 'MacKenzie', 'MacLeod', 'MacNeil',
+        'MacPherson', 'MacLean', 'MacIntyre', 'MacKay', 'MacInnes', 'MacEachern',
+        'Ouellet', 'Lavoie', 'Fortin', 'Caron', 'Simard', 'Bélanger', 'Dube',
+        'Bergeron', 'Lévesque', 'Moreau', 'Girard', 'Boucher', 'Poirier',
+        'Morin', 'Beaulieu', 'Rousseau', 'Lachance', 'Beliveau', 'Gagne',
+        'Thibault', 'Mercier', 'Dumont', 'Gilbert', 'Paquette', 'Couture',
+        'Renaud', 'Bernier', 'Turcotte', 'Vincent', 'Raymond', 'Dion',
+        'Giguere', 'Larochelle', 'Desjardins', 'Blanchette', 'Parent',
+        'Landry', 'Beaulne', 'Sylvestre', 'St-Pierre', 'Houle', 'Cloutier',
+        'Lambert', 'Royer', 'Picard', 'Bolduc', 'Lessard', 'Arsenault',
+        'Plante', 'Richer', 'Lemieux', 'Hamel', 'Allard', 'Bedard', 'Bisson',
+        'Leduc', 'Leclerc', 'Blais', 'Dufour', 'Grenier', 'Brouillard',
+        'Lalonde', 'St-Laurent', 'Lauzon', 'Beauchesne', 'Lefebvre',
+        'Goulet', 'Hebert', 'Clement', 'Robert', 'Chaput', 'Rancourt',
+        'Desrochers', 'Veilleux', 'Mailhot', 'Belanger', 'Boivin',
+        'Poulin', 'Drolet', 'Mathieu', 'Barrette', 'Fournier', 'Page',
+        'Lussier', 'Deschenes', 'Drouin', 'Lacroix', 'Gravel', 'Lacasse',
+        'Breton', 'Samson', 'Champagne', 'Gauthier', 'Clermont', 'Proulx',
+        'Desilets', 'Dionne', 'Gagné', 'Cormier', 'Lebel', 'Gendron',
+        'Vachon', 'St-Jean', 'Coutu', 'Peloso', 'Dugas', 'Tessier', 'Leger'
+    ]
+
+            }
+        };
+
+        const nameDisplay = document.getElementById('nameDisplay');
+        const generateButton = document.getElementById('generateButton');
+        const notification = document.getElementById('notification');
+        const nameDisplayContainer = document.getElementById('nameDisplayContainer');
+
+        function generateFullName(country) {
+            const male = Math.random() > 0.49;
+            const firstName = male ?
+                randomItem(nameDatabase[country].male) :
+                randomItem(nameDatabase[country].female);
+            const lastName = randomItem(nameDatabase[country].surnames);
+            return `${firstName} ${lastName}`;
+        }
+
+        function randomItem(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
+        function copyNameToClipboard(name) {
+            navigator.clipboard.writeText(name)
+                .then(() => {
+                    notification.classList.add('show');
+                    setTimeout(() => {
+                        notification.classList.remove('show');
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error('Falló la copia: ', err);
+                });
+        }
+
+        function generateAndCopy() {
+            const country = 'us'; // o 'ca'
+            const fullName = generateFullName(country);
+            nameDisplay.textContent = fullName;
+            copyNameToClipboard(fullName);
+            nameDisplay.classList.add('copied');
+            nameDisplayContainer.classList.add('show'); // Show the container
+            setTimeout(() => nameDisplay.classList.remove('copied'), 1000);
+        }
+
+        //Event Listeners
+        generateButton.addEventListener('click', generateAndCopy);
+
+    </script>
+</body>
+</html>
