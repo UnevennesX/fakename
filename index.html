@@ -5,114 +5,112 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fake-Name</title>
             <link rel="icon" type="image/png" href="https://cdn.dribbble.com/users/7549673/screenshots/17206704/media/1210a9d0ec8af427967e735935861eeb.png?resize=400x300&vertical=center" />
-            <style>
-                :root {
-                    --bg-color: #121212; /* Fondo general */
-                    --text-color: #f0f0f0; /* Texto principal */
-                    --primary-color: #102f4b; /* Azul oscuro para el botón */
-                    --secondary-color: #0e263d; /* Un poco más oscuro para el hover */
-                    --accent-color: #a8dadc; /* Azul verdoso suave para detalles */
-                    --surface-color: #1e1e1e; /* Fondo de las tarjetas (original) */
-                    --title-color: #778899; /* Gris acero para el título */
-                }
-            
-                body {
-                    background-color: var(--bg-color);
-                    color: var(--text-color);
-                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                    margin: 0;
-                    padding: 0;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    min-height: 100vh;
-                }
-            
-                .container {
-                    background-color: var(--surface-color);
-                    border-radius: 12px;
-                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-                    padding: 2rem;
-                    width: 90%;
-                    max-width: 600px;
-                    text-align: center;
-                }
-            
-                h1 {
-                    color: var(--title-color); /* Gris acero para el título */
-                    margin-bottom: 1.5rem;
-                    font-size: 2rem;
-                }
-            
-                .description {
-                    color: var(--text-color);
-                    margin-bottom: 1.5rem;
-                    font-size: 1rem;
-                    opacity: 0.8;
-                }
-            
-                .name-display {
-                    background-color: rgba(255, 255, 255, 0.05);
-                    border: 1px solid var(--accent-color);
-                    border-radius: 6px;
-                    color: var(--text-color);
-                    font-size: 1.5rem;
-                    margin: 1rem 0;
-                    padding: 1rem;
-                    cursor: pointer;
-                    user-select: none;
-                    transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
-                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-                }
-            
-                .name-display:hover {
-                    background-color: rgba(255, 255, 255, 0.1);
-                    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
-                }
-            
-                .name-display.copied {
-                    border-color: var(--accent-color);
-                    background-color: rgba(168, 218, 220, 0.15); /* Azul verdoso muy suave */
-                    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
-                }
-            
-                button {
-                    background-color: var(--primary-color); /* Azul oscuro para el botón */
-                    border: none;
-                    border-radius: 6px;
-                    color: var(--text-color);
-                    cursor: pointer;
-                    font-size: 1rem;
-                    padding: 0.75rem 1.5rem;
-                    transition: background-color 0.3s;
-                    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
-                }
-            
-                button:hover {
-                    background-color: var(--secondary-color);
-                }
-            
-                .notification {
-                    color: var(--accent-color);
-                    margin-top: 0.75rem;
-                    opacity: 0;
-                    transition: opacity 0.3s;
-                }
-            
-                .notification.show {
-                    opacity: 1;
-                }
-            
-                #nameDisplayContainer {
-                    /* Initially hidden */
-                    display: none;
-                }
-            
-                #nameDisplayContainer.show {
-                    /* Shown when a name is generated */
-                    display: block;
-                }
-            </style>
+              <style>
+        :root {
+            --bg-color: #121212;
+            --text-color: #f0f0f0;
+            --primary-color: #bb86fc;
+            --secondary-color: #3700b3;
+            --accent-color: #03dac6;
+            --surface-color: #1e1e1e;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: var(--surface-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            padding: 2rem;
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+
+        .description {
+            color: var(--text-color);
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        .name-display {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--accent-color);
+            border-radius: 6px;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .name-display:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .name-display.copied {
+            border-color: var(--primary-color);
+            background-color: rgba(187, 134, 252, 0.1);
+            box-shadow: 0 3px 6px rgba(187, 134, 252, 0.3);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 6px;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0.75rem 1.5rem;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .notification {
+            color: var(--accent-color);
+            margin-top: 0.75rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .notification.show {
+            opacity: 1;
+        }
+
+        #nameDisplayContainer {
+            /* Initially hidden */
+            display: none;
+        }
+
+        #nameDisplayContainer.show {
+            /* Shown when a name is generated */
+            display: block;
+        }
+    </style>
 </head>
 <body>
 
